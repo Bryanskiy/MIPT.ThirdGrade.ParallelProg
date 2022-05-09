@@ -31,7 +31,6 @@ int main(int argc, char** argv) {
         startTime = MPI_Wtime();
     }
 #endif
-
     std::size_t left_border  = M * my_rank / commsize + 1;
     if(left_border == 0) {
         ++left_border;
@@ -75,15 +74,10 @@ int main(int argc, char** argv) {
     if(my_rank) {
         for(std::size_t i = 2; i < K; ++i) {
             for(std::size_t j = left_border; j < right_border; ++j) {
-               MPI_Send(&grid[K - 1 - i][j], 1, MPI_LONG_DOUBLE, 0, 0, MPI_COMM_WORLD);
+               MPI_Send(&grid[K - 1 - i][j], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
             }
         }
     } else {
-#ifdef TIME
-        auto endTime = MPI_Wtime();
-        std::cout << "elapsed time: " << endTime - startTime << "s\n";
-#endif
-
         for(std::size_t rank = 1; rank < commsize; ++rank) {
             left_border  = M * rank / commsize + 1;
             if(left_border == 0) {
@@ -91,14 +85,17 @@ int main(int argc, char** argv) {
             }
             right_border = M * (rank + 1) / commsize + 1;
             right_border = std::min(right_border, M);
+            std::size_t len = right_border - left_border;
 
             for(std::size_t i = 2; i < K; ++i) {
-                for(std::size_t j = left_border; j < right_border; ++j) {
-                    MPI_Recv(&grid[K - 1 - i][j], 1, MPI_LONG_DOUBLE, rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                }
+                MPI_Recv(&grid[K - 1 - i][left_border], len, MPI_DOUBLE, rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
             
         }
+#ifdef TIME
+        auto endTime = MPI_Wtime();
+        std::cout << "elapsed time: " << endTime - startTime << "s\n";
+#endif
 #ifdef DUMP
         std::cout << grid << std::endl;
 #endif

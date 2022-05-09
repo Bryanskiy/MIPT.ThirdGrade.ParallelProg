@@ -1,14 +1,22 @@
-.PHONY: all parallel naive debug 
+.PHONY: all time dump  
+
+GENERAL_OPTS = -std=c++2a -O2 -I matrix/ 
+TIME_OPTS    = -D"TIME"
+DUMP_OPTS    = -D"DUMP"
+
+COMPILE_NAIVE    = g++ naive.cpp helper.cpp -o naive.out
+COMPILE_PARALLEL = mpic++ parallel.cpp helper.cpp -o parallel.out 
 
 all: 
-	g++ -std=c++2a naive.cpp -o native.out -I matrix/ -g
-	mpic++ -std=c++2a parallel.cpp -o parallel.out -I matrix/ -g
+	$(COMPILE_NAIVE) $(GENERAL_OPTS) 
+	$(COMPILE_PARALLEL) $(GENERAL_OPTS) 
 
-parallel: 
-	mpic++ -std=c++2a parallel.cpp -o parallel.out -I matrix/ -g
 
-debug: 
-	g++ -std=c++2a naive.cpp -I matrix/ -g
+time: 
+	$(COMPILE_NAIVE) $(GENERAL_OPTS) $(TIME_OPTS)
+	$(COMPILE_PARALLEL) $(GENERAL_OPTS) $(TIME_OPTS)
 
-naive:
-	g++ -std=c++2a naive.cpp -o naive.out -I matrix/ 
+
+dump: 
+	$(COMPILE_NAIVE) $(GENERAL_OPTS) $(DUMP_OPTS) 
+	$(COMPILE_PARALLEL) $(GENERAL_OPTS) $(DUMP_OPTS)

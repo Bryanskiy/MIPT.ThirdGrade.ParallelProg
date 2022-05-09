@@ -79,6 +79,11 @@ int main(int argc, char** argv) {
             }
         }
     } else {
+#ifdef TIME
+        auto endTime = MPI_Wtime();
+        std::cout << "elapsed time: " << endTime - startTime << "s\n";
+#endif
+
         for(std::size_t rank = 1; rank < commsize; ++rank) {
             left_border  = M * rank / commsize + 1;
             if(left_border == 0) {
@@ -94,11 +99,6 @@ int main(int argc, char** argv) {
             }
             
         }
-#ifdef TIME
-    auto endTime = MPI_Wtime();
-    std::cout << "elapsed time: " << endTime - startTime << "s\n";
-#endif
-
 #ifdef DUMP
         std::cout << grid << std::endl;
 #endif

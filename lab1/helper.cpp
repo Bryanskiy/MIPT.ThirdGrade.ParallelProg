@@ -13,11 +13,13 @@ gtype f(gtype t, gtype x) {
 }
 
 void angle(matrix::matrix_t<gtype>& grid, std::size_t k, std::size_t m, gtype tau, gtype h) {
-    grid[k-1][m] = f(k * tau, m * h) * tau - (grid[k][m] - grid[k][m+1]) / h * tau + grid[k][m];
+    std::size_t K = grid.get_rows_number();
+    grid[k-1][m] = f((K - 1 - k) * tau, m * h) * tau - (grid[k][m] - grid[k][m-1]) / h * tau + grid[k][m];
 }
 
 void krest(matrix::matrix_t<gtype>& grid, std::size_t k, std::size_t m, gtype tau, gtype h) {
-    grid[k-1][m] = f(k * tau, m * h) * 2 * tau - (grid[k][m-1] - grid[k][m+1]) * tau / h + grid[k+1][m];
+    std::size_t K = grid.get_rows_number();
+    grid[k-1][m] = f((K - 1 - k) * tau, m * h) * 2 * tau - (grid[k][m+1] - grid[k][m-1]) * tau / h + grid[k+1][m];
 }
 
 void initGrid(matrix::matrix_t<gtype>& grid, gtype tau, gtype h) {

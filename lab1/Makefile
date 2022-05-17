@@ -1,6 +1,6 @@
 .PHONY: all time dump  
 
-GENERAL_OPTS = -std=c++2a -g -I matrix/ 
+GENERAL_OPTS = -std=c++2a -I matrix/ 
 TIME_OPTS    = -D"TIME"
 DUMP_OPTS    = -D"DUMP"
 
